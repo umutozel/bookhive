@@ -153,12 +153,10 @@ module.exports = function (grunt) {
     wiredep: {
       app: {
         src: ['<%= yeoman.app %>/index.html'],
-        ignorePath:  /\.\.\//
+        ignorePath: /\.\.\//
       }
     },
-
     
-
     // Reads HTML for usemin blocks to enable smart builds that automatically
     // concat, minify and revision files. Creates configurations in memory so
     // additional tasks can operate on them
@@ -227,11 +225,11 @@ module.exports = function (grunt) {
             'fonts/*'
           ]
         }, {
-          expand: true,
-          cwd: '.temp/<%= yeoman.images %>',
-          dest: '<%= yeoman.dist %>/<%= yeoman.images %>',
-          src: ['generated/*']
-        }]
+            expand: true,
+            cwd: '.temp/<%= yeoman.images %>',
+            dest: '<%= yeoman.dist %>/<%= yeoman.images %>',
+            src: ['generated/*']
+          }]
       },
       styles: {
         expand: true,
@@ -292,6 +290,15 @@ module.exports = function (grunt) {
       ]
     },
 
+    parallel: {
+      assets: {
+        options: {
+          grunt: true
+        },
+        tasks: ['ionic:serve', 'watch']
+      }
+    },
+  
     // By default, your `index.html`'s <!-- Usemin block --> will take care of
     // minification. These next options are pre-configured if you do not wish
     // to use the Usemin blocks.
@@ -446,7 +453,7 @@ module.exports = function (grunt) {
   });
 
   // Wrap ionic-cli commands
-  grunt.registerTask('ionic', function() {
+  grunt.registerTask('ionic', function () {
     var done = this.async();
     var script = path.resolve('./node_modules/ionic/bin/', 'ionic');
     var flags = process.argv.splice(3);
@@ -471,18 +478,17 @@ module.exports = function (grunt) {
       return grunt.task.run(['compress', 'ionic:serve']);
     }
 
-    grunt.config('concurrent.ionic.tasks', ['ionic:serve', 'watch']);
-    grunt.task.run(['wiredep', 'init', 'concurrent:ionic']);
+    grunt.task.run(['wiredep', 'init', 'concurrent:ionic', 'parallel:assets']);
   });
-  grunt.registerTask('emulate', function() {
+  grunt.registerTask('emulate', function () {
     grunt.config('concurrent.ionic.tasks', ['ionic:emulate:' + this.args.join(), 'watch']);
     return grunt.task.run(['init', 'concurrent:ionic']);
   });
-  grunt.registerTask('run', function() {
+  grunt.registerTask('run', function () {
     grunt.config('concurrent.ionic.tasks', ['ionic:run:' + this.args.join(), 'watch']);
     return grunt.task.run(['init', 'concurrent:ionic']);
   });
-  grunt.registerTask('build', function() {
+  grunt.registerTask('build', function () {
     return grunt.task.run(['init', 'ionic:build:' + this.args.join()]);
   });
 
@@ -513,10 +519,10 @@ module.exports = function (grunt) {
     'htmlmin'
   ]);
 
-  grunt.registerTask('coverage', 
+  grunt.registerTask('coverage',
     ['karma:continuous',
-    'connect:coverage:keepalive'
-  ]);
+      'connect:coverage:keepalive'
+    ]);
 
   grunt.registerTask('default', [
     'wiredep',
